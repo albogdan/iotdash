@@ -35,6 +35,10 @@ class Config(object):
     # Secret key for signing cookies
     SECRET_KEY = "secret"
 
+    # OAuth Keys for Google Login
+    #GOOGLE_CLIENT_ID=''
+    #GOOGLE_CLIENT_SECRET=''
+
     # Secret key for Mandrill Email API (note that if the env. variable is not found, it will use the other default value)
     #MANDRILL_APIKEY =  os.environ.get('MANDRILL_APIKEY') or
 

@@ -2,6 +2,13 @@ from application import db
 import datetime
 from sqlalchemy import DateTime
 from sqlalchemy.sql import func
+# Import class to create and check password hashes
+from werkzeug.security import generate_password_hash, check_password_hash
+
+# Import class to provide functions for login of admins
+from flask_login import UserMixin
+
+from application import login_manager
 """
 # Commands to initialize a flask database
     # flask db init
@@ -11,61 +18,74 @@ from sqlalchemy.sql import func
     # flask db upgrade
         # Upgrades the script to the current migration (adds the new model)
 """
-
-class Users(db.Model):
+#https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/ - one-to-many relationships tutorial
+class Customers(UserMixin, db.Model):
     # Define the columns of the table, including primary keys, unique, and
     # indexed fields, which makes searching faster
-    __tablename__ = 'users'
+    __tablename__ = 'customers'
 
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(255), index=True)
-    last_name = db.Column(db.String(255), index=True)
-    discipline = db.Column(db.String(255), index=True)
-    email = db.Column(db.String(255), index=True, unique=True)
-    gender = db.Column(db.String(255))
-    signed_in = db.Column(db.Boolean, default=False)
+    first_name = db.Column(db.String(255), index=True, nullable=False)
+    last_name = db.Column(db.String(255), index=True, nullable=False)
+    email = db.Column(db.String(255), index=True, unique=True, nullable=False)
+    password_hash = db.Column(db.String(128))
+    customer_devices = db.relationship('Devices', backref='customers', lazy=True)
     created_date = db.Column(DateTime(), server_default=func.now()) #func.now() tells the db to calculate the timestamp itself rather than letting the application do it
     updated_date = db.Column(DateTime(), onupdate=func.now())
 
-    downloadable_columns= [('id','ID'), ('first_name','First Name'), ('last_name', 'Last Name'), ('discipline', 'Discipline'), ('email', 'Email'), ('gender', 'Gender'), ('signed_in', 'Signed-In')]
     # __repr__ method describes how objects of this class are printed
     # (useful for debugging)
     def __repr__(self):
-        return '<User {}>'.format(self.first_name) #prints <User 'username'>
+        return '<Customer {}>'.format(self.id) #prints <Customer 'id'>
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    def owns_device(self, device):
+        return self.customer_devices.filter(devices.device_owner == customers.id).count() > 0
+
+    def add_device(self, device):
+        if(not owns_device(device)):
+            self.customer_devices.append(device)
+
+    def remove_device(self, device):
+        if(owns_device(device)):
+            self.customer_devices.remove(device)
 
 
-class FroshGroups(db.Model):
+@login_manager.user_loader
+def load_user(id):
+    return Customers.query.get(int(id))
+
+
+class Devices(db.Model):
     # Define the columns of the table, including primary keys, unique, and
     # indexed fields, which makes searching faster
-    __tablename__ = 'frosh_groups'
-    id = db.Column(db.Integer, primary_key=True)
-    group_name = db.Column(db.String(32), index=True, unique=True)
-    facebook_link = db.Column(db.String(128), unique=True)
+    __tablename__ = 'devices'
+
+    id = db.Column(db.Integer, primary_key=True) #id of the device
+    device_owner = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False) #connect each device to a customer
+    device_measurements = db.relationship('Measurements', backref='devices', lazy=True)
     created_date = db.Column(DateTime(), server_default=func.now()) #func.now() tells the db to calculate the timestamp itself rather than letting the application do it
     updated_date = db.Column(DateTime(), onupdate=func.utcnow())
 
-    downloadable_columns= [('id','ID'), ('group_name', 'Group Name'), ('facebook_link', 'Facebook Link')]
-
     def __repr__(self):
-        return '<FroshGroup {}>'.format(self.group_name) #prints <FroshGroups 'group_name'>
+        return '<Device {}>'.format(self.id) #prints <Device 'id'>
 
 
-class Leedurs(db.Model):
+class Measurements(db.Model):
     # Define the columns of the table, including primary keys, unique, and
     # indexed fields, which makes searching faster
-    __tablename__ = 'leedurs'
+    __tablename__ = 'measurements'
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(255), index=True)
-    last_name = db.Column(db.String(255), index=True)
-    year = db.Column(db.String(255))
-    discipline = db.Column(db.String(255))
-    email = db.Column(db.String(255), index=True, unique=True)
-    phone = db.Column(db.String(255))
-    gender = db.Column(db.String(255))
-    created_date = db.Column(DateTime(), server_default=func.now()) #func.now() tells the db to calculate the timestamp itself rather than letting the application do it
+    description = db.Column(db.String(256), nullable=False) #name of the measurement, such as temperature, pressure, etc.
+    value = db.Column(db.String(256), nullable=False) #value of the measurement
+    device = db.Column(db.Integer, db.ForeignKey('devices.id'), nullable=False)
+    created_date = db.Column(DateTime(), server_default=func.now()) #time of the measurement
     updated_date = db.Column(DateTime(), onupdate=func.utcnow())
 
-    downloadable_columns= [id, first_name, last_name, year, discipline, email, phone, gender]
-
     def __repr__(self):
-        return '<FroshGroup {}>'.format(self.group_name) #prints <Leedurs ''>
+        return '<Measurement {}>'.format(self.id) #prints <Measurement 'id'>

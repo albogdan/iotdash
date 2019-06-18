@@ -6,6 +6,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from config import Config
 
+# Import the flask-login authentication module
+from flask_login import LoginManager
 
 # Initialize the database instance for storing all the information
 db = SQLAlchemy()
@@ -13,6 +15,8 @@ db = SQLAlchemy()
 # Initialize the database migrate instance
 migrate = Migrate()
 
+# Initialize the login instance
+login_manager = LoginManager()
 """
  Encapsulate the app in a function in order to be able to initialize it with
  various environment variables for  testing as well as versatility
@@ -28,6 +32,10 @@ def create_app(config_class=Config):
     db.init_app(flask_app)
     migrate.init_app(flask_app, db)
 
+    # Create a LoginManager instance
+    login_manager.init_app(flask_app)
+    login_manager.login_view = 'auth.login_admin'
+    login_manager.login_message= ''
 
     # Sample HTTP error handling
     @flask_app.errorhandler(404)
@@ -37,15 +45,14 @@ def create_app(config_class=Config):
 
     # Import a module / component using its blueprint handler variable (mod_auth)
     #from application.mod_auth.controllers import mod_auth as auth_module
-    from application.home import homepage as homepage
-    from application.registration import registration as registration
-    from application.admin import admin as admin
+    from application.home import home as home_module
+    from application.auth import auth as auth_module
 
     # Register blueprint(s) - connects each module to the main flask application
     # app.register_blueprint(xyz_module)
-    flask_app.register_blueprint(homepage)
-    flask_app.register_blueprint(registration)
-    flask_app.register_blueprint(admin)
+
+    flask_app.register_blueprint(auth_module)
+    flask_app.register_blueprint(home_module)
 
     return flask_app
 
