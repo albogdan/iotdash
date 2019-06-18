@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block script %}
+    <script>
+    $(document).ready(function(){
+        $(".searchbox").on('change keyup paste submit', function(){
+          //console.log($(".searchbox").val());
+          $.ajax( {
+              type: 'POST',
+              url: '/admin/updatetable',
+              data: JSON.stringify({"search_first_name": $("#fname").val(),
+                                    "search_last_name": $("#lname").val()
+                                   }),
+              contentType: "application/json; charset=utf-8",
+              dataType: "json",
+              success: function(response){
+                    //console.log(response.rows); //print the json response rows to console
+                    var tbl = document.getElementById("Users"); //get the table ID to use the same table
+                    $("#Users tbody tr").remove(); //remove the rows from the old table
+                    var tblBody = document.createElement("tbody"); //create a new table body
+
+                    // creating all cells
+                    for (var i = 0; i < response.num; i++) {
+                      // creates a table row
+                      var row = document.createElement("tr");
+                      for (var key in response.rows[i]) {
+                        // Create a <td> element and a text node, make the text
+                        // node the contents of the <td>, and put the <td> at
+                        // the end of the table row
+                        if((response.rows[i]).hasOwnProperty(key)){
+                            var cell = document.createElement("td");
+                            if(key == "signed_in"){
+                                 var a = document.createElement("a");
+                                 var text = (response.rows[i]["signed_in"]).toString().substr(0,1).toUpperCase() + (response.rows[i]["signed_in"]).toString().substr(1,);
+                                 var linkText = document.createTextNode(text);
+                                 a.appendChild(linkText);
+                                 a.href = "signin/" + response.rows[i]["id"];
+                                 cell.appendChild(a);
+                                 row.appendChild(cell);
+                            }else if(key == "id"){
+                                 //do nothing
+                            }else{
+                                 var cellText = document.createTextNode(response.rows[i][key]);
+                                 cell.appendChild(cellText);
+                                 row.appendChild(cell);
+                            }
+                        }
+                      }
+                      // add the row to the end of the table body
+                      tblBody.appendChild(row);
+                    }
+                    // put the <tbody> in the <table>
+                    tbl.appendChild(tblBody);
+               }
+            });
+        });
+    });
+    </script>
+
+
+{% endblock %}
+
+{% block content %}
+     <center>
+          <form action="" id="searchform" method="post" novalidate>
+              <input type="text" placeholder="First Name" class="searchbox" id="fname"></input>
+              <input type="text" placeholder="Last Name" class="searchbox" id="lname"></input>
+          </form>
+     </center>
+    <div class="" style="overflow: auto; max-height: 80vh">
+       <div class="table-responsive">
+            <table class="table table-striped table-hover" id="Users">
+                <thead>
+                    <tr>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Discipline</th>
+                        <th scope="col">E-Mail</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Signed In?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td> {{ user.first_name }} </td>
+                        <td> {{ user.last_name }} </td>
+                        <td> {{ user.discipline }} </td>
+                        <td> {{ user.email }} </td>
+                        <td> {{ user.gender }} </td>
+                        <td> <a href="signin/{{ user.id }}">{{ user.signed_in }}</a> </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+       </div>
+    </div>
+
+    <div>
+         Number signed in: {{ number_signed_in }}
+    </div>
+
+
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+     <center>
+          <form action="{{ url_for('admin.table_selected') }}" method="post" class="tableform">
+               {{ selectTableForm.hidden_tag() }}
+               <p>
+                    {{ selectTableForm.table.label }}<br>
+                    {{ selectTableForm.table }}
+                    {{ selectTableForm.submit() }}
+               </p>
+          </form>
+     </center>
+
+     <form action="{{ url_for('admin.table_selected') }}" method="post" class="tableform">
+          {{ selectColumnForm.hidden_tag() }}
+          <p>
+               {{ selectColumnForm.checkboxes.label }}<br>
+               {{ selectColumnForm.checkboxes }}
+               {{ selectColumnForm.submit() }}
+          </p>
+     </form>
+
+
+
+{% endblock %}

@@ -1,0 +1,1 @@
+Contains all of the HTML files that are served (based on routing in app.py file) will live here

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ title }}</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="{{ url_for('static',filename='styles/bootstrap-custom.css') }}">
+{% block script %}{% endblock %}
+</head>
+<body>
+     <nav class="navbar navbar-inverse navbar-custom">
+       <div class="container-fluid">
+         <div class="navbar-header">
+           <a class="navbar-brand" href="/">F!roshWeek 2T0</a>
+         </div>
+         <ul class="nav navbar-nav">
+           <li><a href="/admin">Admin</a></li>
+           <li><a href="/register">Register</a></li>
+           <li><a href="/faq">FAQ</a></li>
+           <li><a href="/schedule">Events & Schedule</a></li>
+           <li><a href="/blog">F!roshWeek Blog</a></li>
+         </ul>
+         <ul class="nav navbar-nav navbar-right">
+           <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+           <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+         </ul>
+       </div>
+     </nav>
+
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <ul>
+      {% for message in messages %}
+      <li>{{ message }}</li>
+      {% endfor %}
+  </ul>
+  {% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+
+
+</body>
+</html>
