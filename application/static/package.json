@@ -1,9 +1,10 @@
 {
   "name": "static",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "dependencies": {
+    "@material-ui/core": "^4.1.1",
+    "@material-ui/icons": "^4.2.0",
     "history": "^4.9.0",
     "react-router-dom": "^5.0.1"
   },
@@ -16,7 +17,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "style-loader": "^0.23.1",
-    "webpack": "^4.34.0",
+    "webpack": "^4.35.0",
     "webpack-cli": "^3.3.4"
   },
   "scripts": {
@@ -26,5 +27,6 @@
     "watch": "webpack --progress -d --config webpack.config.js --watch"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "description": ""
 }
