@@ -34,7 +34,7 @@ def create_app(config_class=Config):
 
     # Create a LoginManager instance
     login_manager.init_app(flask_app)
-    login_manager.login_view = 'auth.login_admin'
+    login_manager.login_view = 'auth.login'
     login_manager.login_message= ''
 
     # Sample HTTP error handling
@@ -47,12 +47,14 @@ def create_app(config_class=Config):
     #from application.mod_auth.controllers import mod_auth as auth_module
     from application.home import home as home_module
     from application.auth import auth as auth_module
+    from application.dash import dash as dash_module
 
     # Register blueprint(s) - connects each module to the main flask application
     # app.register_blueprint(xyz_module)
 
     flask_app.register_blueprint(auth_module)
     flask_app.register_blueprint(home_module)
+    flask_app.register_blueprint(dash_module)
 
     return flask_app
 

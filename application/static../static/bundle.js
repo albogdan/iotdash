@@ -77,7 +77,7 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "C:\\Users\\AB\\Documents\\Projects\\IOT\\iotdash\\application\\static";
+/******/ 	__webpack_require__.p = "A:\\AB\\Documents\\Projects\\IOT\\iotdash\\application\\static../static";
 /******/
 /******/
 /******/ 	// Load entry module and return exports
