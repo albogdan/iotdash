@@ -63,6 +63,7 @@ def login():
 
 @auth.route('/logout')
 def logout():
+    print(current_user.customer_devices.all())
     logout_user()
     return redirect(url_for('home.index'))
 

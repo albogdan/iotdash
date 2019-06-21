@@ -29,7 +29,7 @@ class Customers(UserMixin, db.Model):
     last_name = db.Column(db.String(255), index=True, nullable=False)
     email = db.Column(db.String(255), index=True, unique=True, nullable=False)
     password_hash = db.Column(db.String(128))
-    customer_devices = db.relationship('Devices', backref='customers', lazy=True)
+    customer_devices = db.relationship('Devices', backref='devices', lazy='dynamic')
     created_date = db.Column(DateTime(), server_default=func.now()) #func.now() tells the db to calculate the timestamp itself rather than letting the application do it
     updated_date = db.Column(DateTime(), onupdate=func.now())
 
@@ -44,15 +44,12 @@ class Customers(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    def owns_device(self, device):
-        return self.customer_devices.filter(devices.device_owner == customers.id).count() > 0
-
     def add_device(self, device):
-        if(not owns_device(device)):
+        if(self.customer_devices.filter(Devices.device_owner == Customers.id).count() > 0):
             self.customer_devices.append(device)
 
     def remove_device(self, device):
-        if(owns_device(device)):
+        if(self.customer_devices.filter(Devices.device_owner == Customers.id).count() > 0):
             self.customer_devices.remove(device)
 
 
@@ -67,7 +64,8 @@ class Devices(db.Model):
     __tablename__ = 'devices'
 
     id = db.Column(db.Integer, primary_key=True) #id of the device
-    device_owner = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False) #connect each device to a customer
+    device_name = db.Column(db.String(256), nullable=False)
+    device_owner = db.Column(db.Integer, db.ForeignKey('customers.id')) #connect each device to a customer
     device_measurements = db.relationship('Measurements', backref='devices', lazy=True)
     created_date = db.Column(DateTime(), server_default=func.now()) #func.now() tells the db to calculate the timestamp itself rather than letting the application do it
     updated_date = db.Column(DateTime(), onupdate=func.utcnow())

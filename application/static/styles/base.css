@@ -1,0 +1,10 @@
+nav li a:hover{
+text-decoration: none;
+color: white;
+}
+nav li:hover{
+  background-color: #00acc1;
+}
+.nav-wrapper {
+  background: linear-gradient(to right, #00acc1, #00bcd4);
+}

@@ -9,6 +9,8 @@ from config import Config
 # Import the flask-login authentication module
 from flask_login import LoginManager
 
+from flask_materialize import Material
+
 # Initialize the database instance for storing all the information
 db = SQLAlchemy()
 
@@ -24,6 +26,7 @@ login_manager = LoginManager()
 def create_app(config_class=Config):
     # Define the application object
     flask_app = Flask(__name__)
+    Material(flask_app)
 
     # Configurations taken from function argument
     flask_app.config.from_object(config_class)

@@ -1,10 +1,16 @@
 {% extends "base.html" %}
+{% import "material/utils.html" as util %}
 
 {% block content %}
+<div class="container">
+    <div class="row">
 
-  <div id="content" />
-      <script src="../static/bundle.js" type="text/javascript"></script>
-  </div>
+            {% for cardX in cards %}
+              <div class="col s12 m6">
+                {{ util.card(cardX.title, cardX.body)}}
+                </div>
+            {% endfor %}
 
-
+    </div>
+</div>
 {% endblock %}
