@@ -12,11 +12,12 @@ from application.dash import dash
 @login_required
 def index():
     devices = current_user.customer_devices.all()
-    cards = []
-    temp = {"title":"","body":""}
+    cards = list()
     for device in devices:
+        temp = {}
         temp['title'] = device.device_name
         temp['body'] = device.device_name
         cards.append(temp)
+
     #cards = [{"title":"AMAZSING","body":"testasdfadf"},{"title":"AMAZSING","body":"testasdfadf"},{"title":"AMAZSING","body":"testasdfadf"},{"title":"AMAZSING","body":"testasdfadf"},{"title":"AMAZSING","body":"testasdfadf"},{"title":"AMAZSING","body":"testasdfadf"},{"title":"AMAZSING","body":"testasdfadf"},{"title":"AMAZSING","body":"testasdfadf"},{"title":"AMAZSING","body":"testasdfadf"},{"title":"AMAZSING","body":"testasdfadf"}]
     return render_template('dash/index.html', cards=cards)

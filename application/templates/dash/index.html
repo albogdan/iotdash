@@ -6,9 +6,10 @@
     <div class="row">
 
             {% for cardX in cards %}
-              <div class="col s12 m6">
+               <div class="col s6 m3 l6">
                 {{ util.card(cardX.title, cardX.body)}}
-                </div>
+               </div>
+               
             {% endfor %}
 
     </div>

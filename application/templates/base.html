@@ -58,7 +58,11 @@
                 <ul id="nav-mobile" class="right hide-on-med-and-down">
                     <li id="home-nav" class="active"><a href="{{ url_for('home.index') }}">Home</a></li>
                     <li id="dash-nav"><a href="{{ url_for('dash.index') }}">Dashboard</a></li>
+                    {% if not current_user.is_anonymous %}
+                    <li id="login-nav"><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                    {% else %}
                     <li id="login-nav"><a href="{{ url_for('auth.login') }}">Login</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </nav>
