@@ -56,7 +56,7 @@ def create_app(config_class=Config):
     # Setup the DASH apps
     from application.pydashboard.layout import layout as layout
     from application.pydashboard.callbacks import register_callbacks as register_callbacks
-    register_dashapp(flask_app, 'Dashapp 1', 'pydashboard', layout, register_callbacks)
+    register_dashapp(flask_app, 'Dashapp 1', 'dashboard', layout, register_callbacks)
 
 
     # Import a module / component using its blueprint handler variable (mod_auth)
@@ -77,8 +77,13 @@ def create_app(config_class=Config):
 def register_dashapp(app, title, base_pathname, layout, register_callbacks_fun):
     # Meta tags for viewport responsiveness
     meta_viewport = {"name": "viewport", "content": "width=device-width, initial-scale=1, shrink-to-fit=no"}
+    external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-    my_dashapp = dash.Dash(__name__, server=app, url_base_pathname='/dashboard/')
+    my_dashapp = dash.Dash(__name__, server=app,
+                           url_base_pathname=f'/{base_pathname}/',
+                           assets_folder=get_root_path(__name__) + f'/{base_pathname}/assets/',
+                           meta_tags=[meta_viewport],
+                           external_stylesheets=external_stylesheets)
 
     with app.app_context():
         my_dashapp.title = title
